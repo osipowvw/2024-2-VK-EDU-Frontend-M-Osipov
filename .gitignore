@@ -1,5 +1,4 @@
 .config/
-.git/
 .local/
 .npm/
 .nvm/
@@ -8,4 +7,6 @@
 dz1/node_modules
 dz1/package-lock.json
 .lesshst
-
+.bash_history
+.cache/
+.motd_shown
