@@ -5,7 +5,7 @@
 .nvm/
 .gitconfig
 .sudo_as_admin_successful
-my-project/node_modules
-my-project/package-lock.json
+dz1/node_modules
+dz1/package-lock.json
 .lesshst
 
