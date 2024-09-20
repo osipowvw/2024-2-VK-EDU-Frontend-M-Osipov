@@ -10,3 +10,5 @@ dz1/package-lock.json
 .bash_history
 .cache/
 .motd_shown
+.bashrc
+.profile

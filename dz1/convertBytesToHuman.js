@@ -33,7 +33,7 @@ export function convertBytesToHuman(bytes) {
 
   if (format.endsWith('.00')) {
     format = bytes.toFixed(0).toString();
-  } else if (Number.isInteger(bytes*10)) {
+  } else if (Number.isInteger(format*10)) {
     format = bytes.toFixed(1).toString();
   }
   return `${format} ${units[ind]}`;
