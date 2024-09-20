@@ -7,4 +7,5 @@
 .sudo_as_admin_successful
 my-project/node_modules
 my-project/package-lock.json
+.lesshst
 
