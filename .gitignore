@@ -1,0 +1,10 @@
+.config/
+.git/
+.local/
+.npm/
+.nvm/
+.gitconfig
+.sudo_as_admin_successful
+my-project/node_modules
+my-project/package-lock.json
+
