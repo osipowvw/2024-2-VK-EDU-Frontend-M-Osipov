@@ -12,3 +12,5 @@ dz1/package-lock.json
 .motd_shown
 .bashrc
 .profile
+vk-edu-frontend/
+simple-chat/node_modules
