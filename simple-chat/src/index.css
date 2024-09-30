@@ -36,7 +36,7 @@ body {
 }
 
 .chat-header {
-    background-color: #8e24aa; /* Фиолетовый цвет */
+    background-color: #8e24aa;
     padding: 10px;
     color: #fff;
     display: flex;
@@ -69,7 +69,7 @@ body {
 .header-info p {
     margin: 0;
     font-size: 0.9em;
-    color: #e1bee7; /* Легкий фиолетовый цвет для текста статуса */
+    color: #e1bee7;
 }
 
 .header-actions {
@@ -106,7 +106,7 @@ body {
 
 .message.sent {
     align-self: flex-end;
-    background-color: #e1bee7; /* Светло-фиолетовый */
+    background-color: #e1bee7;
     color: #333;
 }
 

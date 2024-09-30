@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.querySelector('.form-input');
     const messagesContainer = document.getElementById('messages-container');
 
-    // Load messages from localStorage
     loadMessages();
 
     form.addEventListener('submit', handleSubmit);
@@ -16,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (messageText) {
             const message = {
                 text: messageText,
-                sender: 'Вы', // Add sender's name here
+                sender: 'Вы',
                 timestamp: new Date().toLocaleString()
             };
             addMessage(message);
             saveMessageToLocalStorage(message);
-            input.value = ''; // Clear the input field
+            input.value = '';
         }
     }
 
@@ -39,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <strong>${message.sender}</strong> (${message.timestamp}): ${message.text}
         `;
         messagesContainer.appendChild(messageElement);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     function saveMessageToLocalStorage(message) {
