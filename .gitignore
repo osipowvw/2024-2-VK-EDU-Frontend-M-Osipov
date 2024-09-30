@@ -14,3 +14,4 @@ dz1/package-lock.json
 .profile
 vk-edu-frontend/
 simple-chat/node_modules
+simple-chat/build
