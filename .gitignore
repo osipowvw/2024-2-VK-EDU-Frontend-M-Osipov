@@ -11,5 +11,5 @@ dz1/package-lock.json
 .motd_shown
 .bashrc
 .profile
-**/node_modules
-**/build
+node_modules
+build
