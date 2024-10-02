@@ -98,12 +98,11 @@ body {
 .message {
     max-width: 70%;
     margin: 5px 0;
-    padding: 10px;
+    padding: 10px 10px 25px 10px;
     border-radius: 15px;
     position: relative;
     font-size: 0.9em;
 }
-
 .message.sent {
     align-self: flex-end;
     background-color: #e1bee7;
@@ -130,6 +129,19 @@ body {
     padding: 10px;
     border-top: 1px solid #e0e0e0;
     background-color: #fff;
+}
+
+.user-a {
+    align-self: flex-start;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    color: #333;
+}
+
+.user-b {
+    align-self: flex-end;
+    background-color: #e1bee7;
+    color: #333;
 }
 
 .form-input {
