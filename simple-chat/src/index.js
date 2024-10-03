@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
 
-        if (message.sender === 'Дженнифер') {
-            messageElement.classList.add('user-a');
-        } else {
+        if (message.sender === currentUser) {
             messageElement.classList.add('user-b');
+        } else {
+            messageElement.classList.add('user-a');
         }
 
         messageElement.innerHTML = `
@@ -78,10 +78,28 @@ document.addEventListener('DOMContentLoaded', function () {
     function switchUser() {
         currentUser = currentUser === 'Дженнифер' ? 'Максим' : 'Дженнифер';
         updateUserNameUI();
+        updateMessagesUI();
     }
 
     function updateUserNameUI() {
         userNameElement.textContent = currentUser;
+    }
+
+    function updateMessagesUI() {
+        messagesContainer.innerHTML = '';
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.forEach(message => {
+            const isCurrentUser = message.sender === currentUser;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', isCurrentUser ? 'user-b' : 'user-a');
+            messageElement.innerHTML = `
+                <strong>${message.sender}</strong>: ${message.text}
+                <span class="message-time">${message.timestamp}</span>
+            `;
+            messagesContainer.appendChild(messageElement);
+        });
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     updateUserNameUI();
