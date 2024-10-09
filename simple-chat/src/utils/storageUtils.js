@@ -1,8 +1,8 @@
 export function saveMessageToLocalStorage(messages) {
-    localStorage.setItem('messages', JSON.stringify(messages)); // Сохраняем весь массив в localStorage
+    localStorage.setItem('messages', JSON.stringify(messages));
 }
 
 export function loadMessagesFromLocalStorage() {
     const messages = localStorage.getItem('messages');
-    return messages ? JSON.parse(messages) : []; // Возвращаем массив сообщений или пустой массив, если сообщений нет
+    return messages ? JSON.parse(messages) : [];
 }

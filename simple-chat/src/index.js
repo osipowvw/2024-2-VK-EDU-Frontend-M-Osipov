@@ -10,20 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentUser = 'Максим';
   let messages = loadMessagesFromLocalStorage();
-  console.log('Loaded messages:', messages); // Для отладки
+  console.log('Loaded messages:', messages);
 
-  // Проверка на случай, если сообщения не были загружены
   if (!Array.isArray(messages)) {
     console.error('Messages is not an array:', messages);
     messages = [];
   }
 
-  // Отображаем сообщения при загрузке
   renderMessages(messagesContainer, messages, currentUser);
 
-  // Инициализация компонентов
   initMessageForm(handleSubmit);
-  initHeader(switchUser); // Убедитесь, что initHeader не добавляет лишние слушатели событий
+  initHeader(switchUser);
 
   function handleSubmit(messageText) {
     const message = {
@@ -32,24 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
       timestamp: formatDate(new Date()),
     };
 
-    messages.push(message); // Добавляем сообщение в массив
+    messages.push(message);
     console.log('Messages after adding:', messages);
 
-    saveMessageToLocalStorage(messages); // Сохраняем весь массив сообщений
+    saveMessageToLocalStorage(messages);
 
-    // Перерисовываем сообщения после добавления нового
     renderMessages(messagesContainer, messages, currentUser);
   }
 
   function switchUser() {
-    // Смена текущего пользователя
     currentUser = currentUser === 'Дженнифер' ? 'Максим' : 'Дженнифер';
     updateUserNameUI(currentUser);
 
     console.log('Current User:', currentUser);
     console.log('Messages before switching user:', messages);
 
-    // Загружаем сообщения из localStorage, если они были изменены
     messages = loadMessagesFromLocalStorage();
     renderMessages(messagesContainer, messages, currentUser);
   }
