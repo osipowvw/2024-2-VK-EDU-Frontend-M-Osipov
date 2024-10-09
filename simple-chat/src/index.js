@@ -1,49 +1,56 @@
 import './index.css';
-import { createHeader, initHeader, updateUserNameUI } from './components/Header';
-import { createMessageForm, initMessageForm } from './components/MessageForm';
-import { renderMessages, addMessage } from './components/Message';
+import { initHeader, updateUserNameUI } from './components/Header';
+import { initMessageForm } from './components/MessageForm';
+import { renderMessages } from './components/Message';
 import { formatDate } from './utils/dateUtils';
 import { saveMessageToLocalStorage, loadMessagesFromLocalStorage } from './utils/storageUtils';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const chatContainer = document.createElement('div');
-  chatContainer.classList.add('chat-container');
-
-  chatContainer.innerHTML += createHeader();
-
-  const messagesContainer = document.createElement('div');
-  messagesContainer.classList.add('messages-container');
-  messagesContainer.id = 'messages-container';
-  chatContainer.appendChild(messagesContainer);
-
-  chatContainer.innerHTML += createMessageForm();
-
-  document.body.appendChild(chatContainer);
+  const messagesContainer = document.querySelector('#messages-container');
 
   let currentUser = 'Максим';
   let messages = loadMessagesFromLocalStorage();
-  console.log("Здесь выводятся сообщения", messages);
+  console.log('Loaded messages:', messages); // Для отладки
 
-  initMessageForm(handleSubmit);
-  initHeader(switchUser);
+  // Проверка на случай, если сообщения не были загружены
+  if (!Array.isArray(messages)) {
+    console.error('Messages is not an array:', messages);
+    messages = [];
+  }
+
+  // Отображаем сообщения при загрузке
   renderMessages(messagesContainer, messages, currentUser);
 
+  // Инициализация компонентов
+  initMessageForm(handleSubmit);
+  initHeader(switchUser); // Убедитесь, что initHeader не добавляет лишние слушатели событий
+
   function handleSubmit(messageText) {
-    console.log("Функция handleSubmit вызывается");
     const message = {
-        text: messageText,
-        sender: currentUser,
-        timestamp: formatDate(new Date())
+      text: messageText,
+      sender: currentUser,
+      timestamp: formatDate(new Date()),
     };
-    console.log(message);
-    messages.push(message);
-    saveMessageToLocalStorage(message);
-    addMessage(messagesContainer, message, currentUser);
-}
+
+    messages.push(message); // Добавляем сообщение в массив
+    console.log('Messages after adding:', messages);
+
+    saveMessageToLocalStorage(messages); // Сохраняем весь массив сообщений
+
+    // Перерисовываем сообщения после добавления нового
+    renderMessages(messagesContainer, messages, currentUser);
+  }
 
   function switchUser() {
+    // Смена текущего пользователя
     currentUser = currentUser === 'Дженнифер' ? 'Максим' : 'Дженнифер';
     updateUserNameUI(currentUser);
+
+    console.log('Current User:', currentUser);
+    console.log('Messages before switching user:', messages);
+
+    // Загружаем сообщения из localStorage, если они были изменены
+    messages = loadMessagesFromLocalStorage();
     renderMessages(messagesContainer, messages, currentUser);
   }
 });
