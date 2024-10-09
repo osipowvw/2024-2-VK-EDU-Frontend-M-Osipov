@@ -1,106 +1,49 @@
 import './index.css';
+import { createHeader, initHeader, updateUserNameUI } from './components/Header';
+import { createMessageForm, initMessageForm } from './components/MessageForm';
+import { renderMessages, addMessage } from './components/Message';
+import { formatDate } from './utils/dateUtils';
+import { saveMessageToLocalStorage, loadMessagesFromLocalStorage } from './utils/storageUtils';
 
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('#message-form');
-    const input = document.querySelector('.form-input');
-    const messagesContainer = document.getElementById('messages-container');
-    const switchUserButton = document.getElementById('switch-user-button');
-    const userNameElement = document.getElementById('user-name');
+document.addEventListener('DOMContentLoaded', () => {
+  const chatContainer = document.createElement('div');
+  chatContainer.classList.add('chat-container');
 
-    let currentUser = 'Максим';
+  chatContainer.innerHTML += createHeader();
 
-    loadMessages();
+  const messagesContainer = document.createElement('div');
+  messagesContainer.classList.add('messages-container');
+  messagesContainer.id = 'messages-container';
+  chatContainer.appendChild(messagesContainer);
 
-    form.addEventListener('submit', handleSubmit);
-    input.addEventListener('keypress', handleKeyPress);
-    switchUserButton.addEventListener('click', switchUser);
+  chatContainer.innerHTML += createMessageForm();
 
-    function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        
-        return `${day}.${month} ${hours}:${minutes}`;
-    }
+  document.body.appendChild(chatContainer);
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        const messageText = input.value.trim();
-        if (messageText) {
-            const message = {
-                text: messageText,
-                sender: currentUser,
-                timestamp: formatDate(new Date())
-            };
-            addMessage(message);
-            saveMessageToLocalStorage(message);
-            input.value = '';
-        }
-    }
+  let currentUser = 'Максим';
+  let messages = loadMessagesFromLocalStorage();
+  console.log("Здесь выводятся сообщения", messages);
 
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            form.dispatchEvent(new Event('submit'));
-        }
-    }
+  initMessageForm(handleSubmit);
+  initHeader(switchUser);
+  renderMessages(messagesContainer, messages, currentUser);
 
-    function addMessage(message) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
+  function handleSubmit(messageText) {
+    console.log("Функция handleSubmit вызывается");
+    const message = {
+        text: messageText,
+        sender: currentUser,
+        timestamp: formatDate(new Date())
+    };
+    console.log(message);
+    messages.push(message);
+    saveMessageToLocalStorage(message);
+    addMessage(messagesContainer, message, currentUser);
+}
 
-        if (message.sender === currentUser) {
-            messageElement.classList.add('user-b');
-        } else {
-            messageElement.classList.add('user-a');
-        }
-
-        messageElement.innerHTML = `
-            <strong>${message.sender}</strong>: ${message.text}
-            <span class="message-time">${message.timestamp}</span>
-        `;
-        messagesContainer.appendChild(messageElement);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function saveMessageToLocalStorage(message) {
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        messages.push(message);
-        localStorage.setItem('messages', JSON.stringify(messages));
-    }
-
-    function loadMessages() {
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        messages.forEach(addMessage);
-    }
-
-    function switchUser() {
-        currentUser = currentUser === 'Дженнифер' ? 'Максим' : 'Дженнифер';
-        updateUserNameUI();
-        updateMessagesUI();
-    }
-
-    function updateUserNameUI() {
-        userNameElement.textContent = currentUser;
-    }
-
-    function updateMessagesUI() {
-        messagesContainer.innerHTML = '';
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        messages.forEach(message => {
-            const isCurrentUser = message.sender === currentUser;
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', isCurrentUser ? 'user-b' : 'user-a');
-            messageElement.innerHTML = `
-                <strong>${message.sender}</strong>: ${message.text}
-                <span class="message-time">${message.timestamp}</span>
-            `;
-            messagesContainer.appendChild(messageElement);
-        });
-
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    updateUserNameUI();
+  function switchUser() {
+    currentUser = currentUser === 'Дженнифер' ? 'Максим' : 'Дженнифер';
+    updateUserNameUI(currentUser);
+    renderMessages(messagesContainer, messages, currentUser);
+  }
 });
