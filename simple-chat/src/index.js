@@ -1,45 +1,69 @@
 import './index.css';
-import { initHeader, updateUserNameUI } from './components/Header';
-import { initMessageForm } from './components/MessageForm';
-import { renderMessages } from './components/Message';
-import { formatDate } from './utils/dateUtils';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const messagesContainer = document.querySelector('#messages-container');
+  const chatList = document.getElementById('chat-list');
+  const messagesContainer = document.getElementById('messages-container');
   const chatListScreen = document.getElementById('chat-list-screen');
   const chatScreen = document.getElementById('chat-screen');
-  const chatList = document.getElementById('chat-list');
   const backButton = document.getElementById('back-button');
-
   const createChatButton = document.getElementById('create-chat-button');
+  const newChatNameInput = document.getElementById('new-chat-name');
   const createChatModal = document.getElementById('create-chat-modal');
   const createChatConfirmButton = document.getElementById('create-chat-confirm-button');
   const createChatCancelButton = document.getElementById('create-chat-cancel-button');
-  const newChatNameInput = document.getElementById('new-chat-name');
   const searchInput = document.getElementById('search-input');
+  const messageForm = document.getElementById('message-form');
+  const messageInput = document.getElementById('message-input');
+  const switchUserButton = document.getElementById('switch-user-button');
+  const userNameElement = document.getElementById('user-name');
 
   let chats = JSON.parse(localStorage.getItem('chats')) || [];
+  let messageContainers = JSON.parse(localStorage.getItem('messageContainers')) || {};
   let currentChatId = null;
+  let currentUser = 'Максим';
+  let isSwitched = false;
+  let currentChatName = '';
 
-  initChatList();
+  function init() {
+    initChatList();
+    bindEventListeners();
+  }
 
-  createChatButton.addEventListener('click', () => {
-    createChatModal.style.display = 'flex';
-  });
+  function bindEventListeners() {
+    createChatButton.addEventListener('click', () => createChatModal.style.display = 'flex');
+    createChatCancelButton.addEventListener('click', () => createChatModal.style.display = 'none');
+    createChatConfirmButton.addEventListener('click', handleCreateChat);
+    backButton.addEventListener('click', goBackToChatList);
+    searchInput.addEventListener('input', handleSearch);
+    messageForm.addEventListener('submit', handleSubmitMessage);
+    switchUserButton.addEventListener('click', switchUser);
+  }
 
-  createChatCancelButton.addEventListener('click', () => {
-    createChatModal.style.display = 'none';
-    newChatNameInput.value = '';
-  });
-
-  createChatConfirmButton.addEventListener('click', () => {
+  function handleCreateChat() {
     const newChatName = newChatNameInput.value.trim();
     if (newChatName) {
-      addNewChat(newChatName);
+      createNewChat(newChatName);
       createChatModal.style.display = 'none';
       newChatNameInput.value = '';
     }
-  });
+  }
+
+  function createNewChat(name) {
+    const newChat = {
+      id: `chat-${Date.now()}`,
+      name,
+      lastMessage: '',
+      time: '',
+      readStatus: true,
+    };
+    chats.push(newChat);
+    localStorage.setItem('chats', JSON.stringify(chats));
+
+    messageContainers[newChat.id] = [];
+    localStorage.setItem('messageContainers', JSON.stringify(messageContainers));
+
+    addChatToDOM(newChat);
+  }
 
   function initChatList() {
     chatList.innerHTML = '';
@@ -47,134 +71,121 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function addChatToDOM(chat) {
-    if (document.getElementById(chat.id)) return;
-
     const chatItem = document.createElement('div');
     chatItem.classList.add('chat-item');
-    chatItem.id = chat.id;
     chatItem.innerHTML = `
-      <div class="chat-avatar">
-        <span class="material-icons">account_circle</span>
-      </div>
       <div class="chat-info">
         <h3>${chat.name}</h3>
         <p>${chat.lastMessage || 'Нет сообщений'}</p>
       </div>
-      <div class="chat-time">${chat.time || ''}</div>
-      <span class="indicator"></span>
+      <div class="chat-time">${chat.time}</div>
+      <span class="indicator ${chat.readStatus ? 'read' : 'unread'}"></span>
     `;
-
     chatList.appendChild(chatItem);
-
-    chatItem.addEventListener('click', () => {
-      currentChatId = chat.id;
-      openChat(chat.id, chat.name);
-    });
+    chatItem.addEventListener('click', () => openChat(chat.id, chat.name));
   }
 
   function openChat(chatId, chatName) {
     currentChatId = chatId;
+    currentChatName = chatName;
+    currentUser = 'Максим';
+    userNameElement.textContent = chatName;
+
     chatListScreen.style.display = 'none';
     chatScreen.style.display = 'block';
-    
-    document.getElementById('user-name').textContent = chatName;
-  
-    messages = [];
-    loadMessages(chatId);
-    scrollToBottom(messagesContainer);
+
+    renderMessages(chatId);
   }
-  
-  function addNewChat(chatName) {
-    if (chats.some(chat => chat.name === chatName)) {
-      alert('Чат с таким именем уже существует!');
-      return;
+
+  function renderMessages(chatId) {
+    messagesContainer.innerHTML = '';
+    const messages = messageContainers[chatId] || [];
+    messages.forEach(message => {
+        const messageElement = createMessageElement(message);
+        messagesContainer.appendChild(messageElement);
+    });
+  }
+
+  function createMessageElement({ sender, text, timestamp }) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+
+    if (sender === currentUser) {
+        messageElement.classList.add('message-right');
+    } else {
+        messageElement.classList.add('message-left');
     }
 
-    const newChatId = `chat-${Date.now()}`;
-    const newChat = {
-      id: newChatId,
-      name: chatName,
-      lastMessage: '',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      currentUser: 'Максим',
-    };
+    const messageText = document.createElement('span');
+    messageText.textContent = `${sender}: ${text} (${formatTime(timestamp)})`;
+    messageElement.appendChild(messageText);
 
-    chats.push(newChat);
-    localStorage.setItem('chats', JSON.stringify(chats));
-    addChatToDOM(newChat);
+    return messageElement;
+  }
+
+  function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  function handleSubmitMessage(event) {
+    event.preventDefault();
+    const messageText = messageInput.value.trim();
+    if (messageText && currentChatId) {
+        const now = new Date();
+        const timestamp = now.toISOString();
+        const newMessage = {
+            sender: currentUser,
+            text: messageText,
+            timestamp: timestamp,
+        };
+
+        messageContainers[currentChatId].push(newMessage);
+        localStorage.setItem('messageContainers', JSON.stringify(messageContainers));
+
+        renderMessages(currentChatId);
+        messageInput.value = '';
+
+        updateChatInfo(currentChatId, messageText, now, chats);
+    }
+  }
+
+  function updateChatInfo(chatId, lastMessage, time) {
+    const chatIndex = chats.findIndex(chat => chat.id === chatId);
+    if (chatIndex !== -1) {
+        chats[chatIndex].lastMessage = lastMessage;
+        chats[chatIndex].time = formatTime(time);
+        localStorage.setItem('chats', JSON.stringify(chats));
+        initChatList();
+    }
   }
 
   function goBackToChatList() {
     chatScreen.style.display = 'none';
     chatListScreen.style.display = 'block';
+    currentChatId = null;
   }
 
-  function loadMessages(chatId) {
-    let messages = JSON.parse(localStorage.getItem(`messages_${chatId}`)) || [];
-    renderMessages(messagesContainer, messages, chats.find(chat => chat.id === chatId).currentUser);
-  }
-  
-
-  function saveMessages(chatId, messages) {
-    localStorage.setItem(`messages_${chatId}`, JSON.stringify(messages));
-  }
-
-  backButton.addEventListener('click', () => {
-    goBackToChatList();
-  });
-
-  function scrollToBottom(container) {
-    container.scrollTop = container.scrollHeight;
-  }
-
-  let messages = [];
-
-  initMessageForm(handleSubmit);
-  initHeader(switchUser);
-
-  function handleSubmit(messageText) {
-    if (!currentChatId) {
-      console.error('Текущий чат не установлен');
-      return;
-    }
-  
-    const chat = chats.find(chat => chat.id === currentChatId);
-    
-    if (!chat) {
-      console.error('Чат не найден');
-      return; 
-    }
-  
-    const message = {
-      text: messageText,
-      sender: chat.currentUser,
-      timestamp: formatDate(new Date()),
-    };
-  
-    messages.push(message);
-    saveMessages(currentChatId, messages);
-    renderMessages(messagesContainer, messages, message.sender);
-  }
-  
-  function switchUser() {
-    const chat = chats.find(chat => chat.id === currentChatId);
-    if (chat) {
-      chat.currentUser = chat.currentUser === 'Максим' ? chat.name : 'Максим';
-      updateUserNameUI(chat.currentUser);
-
-      messages = JSON.parse(localStorage.getItem(`messages_${currentChatId}`)) || [];
-      renderMessages(messagesContainer, messages, chat.currentUser);
-      localStorage.setItem('chats', JSON.stringify(chats));
-    }
-  }
-
-  searchInput.addEventListener('input', () => {
-    const searchQuery = searchInput.value.toLowerCase().trim();
+  function handleSearch() {
+    const query = searchInput.value.toLowerCase();
     const chatItems = document.querySelectorAll('.chat-item');
+    chatItems.forEach(item => {
+      const chatName = item.querySelector('h3').textContent.toLowerCase();
+      item.style.display = chatName.includes(query) ? 'block' : 'none';
+    });
+  }
 
-    chatItems.forEach(chat => {
-        const chatName = chat.querySelector('h3').textContent.toLowerCase();
-        chat.style.display = chatName.includes(searchQuery) ? 'flex' : 'none';
-      });
-  });
+  function switchUser() {
+    if (!isSwitched) {
+      currentUser = currentChatName;
+    } else {
+      currentUser = 'Максим';
+    }
+    isSwitched = !isSwitched;
+    renderMessages(currentChatId);
+  }
+
+  init();
 });
