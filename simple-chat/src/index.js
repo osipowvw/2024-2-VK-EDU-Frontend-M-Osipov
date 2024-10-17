@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('messageContainers', JSON.stringify(messageContainers));
 
     addChatToDOM(newChat);
+    location.reload();
   }
 
   function initChatList() {
@@ -150,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateChatInfo(currentChatId, messageText, now, chats);
     }
+    //renderMessages(currentChatId);
   }
 
   function updateChatInfo(chatId, lastMessage, time) {
