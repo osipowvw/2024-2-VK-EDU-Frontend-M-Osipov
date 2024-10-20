@@ -3,6 +3,7 @@ import { formatTime } from './components/utils.js';
 import { goBackToChatList } from './components/chat.js';
 import { switchUser } from './components/switch.js';
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const chatList = document.getElementById('chat-list');
     const messagesContainer = document.getElementById('messages-container');
