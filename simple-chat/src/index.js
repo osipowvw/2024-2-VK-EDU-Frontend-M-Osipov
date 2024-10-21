@@ -113,25 +113,50 @@ document.addEventListener('DOMContentLoaded', () => {
             const messageElement = createMessageElement(message);
             messagesContainer.appendChild(messageElement);
         });
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        const messages = messagesContainer.querySelectorAll('.message');
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            lastMessage.scrollIntoView();
+        }
     }
 
     function createMessageElement({ sender, text, timestamp }) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
-
+    
         if (sender === currentUser) {
             messageElement.classList.add('message-right');
         } else {
             messageElement.classList.add('message-left');
         }
-
-        const messageText = document.createElement('span');
-        messageText.textContent = `${sender}: ${text} (${formatTime(timestamp)})`;
-        messageElement.appendChild(messageText);
-
+    
+        messageElement.classList.add('new-message');
+    
+        messageElement.innerHTML = `
+            <strong>${sender}</strong><br>
+            ${text}<br>
+            <span class="message-time">${formatTime(timestamp)}</span>
+        `;
+    
+        const messagesContainer = document.querySelector('.messages-container');
+        const allMessages = messagesContainer.querySelectorAll('.message');
+        allMessages.forEach(msg => {
+            msg.classList.remove('new-message', 'show');
+        });
+    
+        messagesContainer.appendChild(messageElement);
+        setTimeout(() => {
+            messageElement.classList.add('show');
+            messageElement.classList.remove('new-message');
+        }, 300);
+    
         return messageElement;
     }
-
+    
     function handleSubmitMessage(event) {
         event.preventDefault();
         const messageText = messageInput.value.trim();
@@ -151,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             messageInput.value = '';
 
             updateChatInfo(currentChatId, messageText, now);
+            scrollToBottom();
         }
     }
 
