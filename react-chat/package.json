@@ -5,6 +5,8 @@
   "type": "module",
   "homepage": "https://github.com/osipowvw/2024-2-VK-EDU-Frontend-M-Osipov",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
