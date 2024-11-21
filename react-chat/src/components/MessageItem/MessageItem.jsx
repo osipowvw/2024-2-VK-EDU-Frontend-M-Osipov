@@ -4,7 +4,7 @@ import { formatTime } from '../../utils/utils.js';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-function MessageItem({ message, isOwnMessage }) {
+export function MessageItem({ message, isOwnMessage }) {
     return (
         <div
             className={`${styles.messageItem} ${
@@ -27,5 +27,3 @@ function MessageItem({ message, isOwnMessage }) {
         </div>
     );
 }
-
-export default MessageItem;

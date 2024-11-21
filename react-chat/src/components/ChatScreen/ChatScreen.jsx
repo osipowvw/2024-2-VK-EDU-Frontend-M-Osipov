@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './ChatScreen.module.scss';
-import Header from '../Header/Header';
-import MessageItem from '../MessageItem/MessageItem';
-import MessageForm from '../MessageForm/MessageForm';
+import { Header } from '../Header/Header';
+import { MessageItem } from '../MessageItem/MessageItem';
+import { MessageForm } from '../MessageForm/MessageForm';
 
-function ChatScreen({
+export function ChatScreen({
     chatId,
     chatName,
     messages,
@@ -40,5 +40,3 @@ function ChatScreen({
         </div>
     );
 }
-
-export default ChatScreen;

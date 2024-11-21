@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './CreateChatModal.module.scss';
 import { Modal, Box, TextField, Button } from '@mui/material';
 
-function CreateChatModal({ open, onClose, onCreate }) {
+export function CreateChatModal({ open, onClose, onCreate }) {
     const [chatName, setChatName] = useState('');
 
     const handleCreate = () => {
@@ -36,5 +36,3 @@ function CreateChatModal({ open, onClose, onCreate }) {
         </Modal>
     );
 }
-
-export default CreateChatModal;

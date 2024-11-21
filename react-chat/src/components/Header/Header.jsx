@@ -4,7 +4,7 @@ import { IconButton, Avatar } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
-function Header({ chatName, onBack, onSwitchUser }) {
+export function Header({ chatName, onBack, onSwitchUser }) {
     return (
         <header className={styles.chatHeader}>
             <IconButton onClick={onBack} className={styles.backButton}>
@@ -23,5 +23,3 @@ function Header({ chatName, onBack, onSwitchUser }) {
         </header>
     );
 }
-
-export default Header;

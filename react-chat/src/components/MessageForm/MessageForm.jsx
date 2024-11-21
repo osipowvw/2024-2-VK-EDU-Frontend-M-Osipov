@@ -3,7 +3,7 @@ import styles from './MessageForm.module.scss';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
-function MessageForm({ onSendMessage }) {
+export function MessageForm({ onSendMessage }) {
     const [messageText, setMessageText] = useState('');
 
     const handleSubmit = (e) => {
@@ -29,5 +29,3 @@ function MessageForm({ onSendMessage }) {
         </form>
     );
 }
-
-export default MessageForm;

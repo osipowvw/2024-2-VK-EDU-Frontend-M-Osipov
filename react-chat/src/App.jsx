@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import ChatListScreen from './components/ChatListScreen/ChatListScreen.jsx';
-import ChatScreen from './components/ChatScreen/ChatScreen.jsx';
+import { ChatListScreen } from './components/ChatListScreen/ChatListScreen.jsx';
+import { ChatScreen } from './components/ChatScreen/ChatScreen.jsx';
 import './App.scss';
 import { formatTime } from './utils/utils.js';
 import { v4 as uuidv4 } from 'uuid';
 
-function App() {
+export function App() {
     const [chats, setChats] = useState(JSON.parse(localStorage.getItem('chats')) || []);
     const [messageContainers, setMessageContainers] = useState(JSON.parse(localStorage.getItem('messageContainers')) || {});
     const [currentChatId, setCurrentChatId] = useState(null);
@@ -106,5 +106,3 @@ function App() {
         </div>
     );
 }
-
-export default App;

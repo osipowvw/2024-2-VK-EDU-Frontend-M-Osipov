@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './ChatItem.module.scss';
 import { Avatar } from '@mui/material';
 
-function ChatItem({ chat, onClick }) {
+export function ChatItem({ chat, onClick }) {
     return (
         <div className={styles.chatItem} onClick={onClick}>
             <Avatar className={styles.avatar}>
@@ -16,5 +16,3 @@ function ChatItem({ chat, onClick }) {
         </div>
     );
 }
-
-export default ChatItem;

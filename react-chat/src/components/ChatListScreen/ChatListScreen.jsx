@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styles from './ChatListScreen.module.scss';
 import { IconButton, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import ChatItem from '../ChatItem/ChatItem.jsx';
-import CreateChatModal from '../CreateChatModal/CreateChatModal.jsx';
+import { ChatItem } from '../ChatItem/ChatItem.jsx';
+import { CreateChatModal } from '../CreateChatModal/CreateChatModal.jsx';
 
-function ChatListScreen({ chats, onChatSelect, onCreateChat }) {
+export function ChatListScreen({ chats, onChatSelect, onCreateChat }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -50,5 +50,3 @@ function ChatListScreen({ chats, onChatSelect, onCreateChat }) {
         </div>
     );
 }
-
-export default ChatListScreen;
