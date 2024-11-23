@@ -15,7 +15,6 @@ export function MessageItem({ message, isOwnMessage }) {
             <p>{message.text}</p>
             <span className={styles.timestamp}>
                 {formatTime(message.timestamp)}
-                {}
                 {isOwnMessage && (
                     message.readStatus ? (
                         <CheckCircleIcon style={{ color: 'blue', fontSize: '14px', marginLeft: '5px' }} />

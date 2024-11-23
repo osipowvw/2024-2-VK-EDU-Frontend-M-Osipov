@@ -3,12 +3,22 @@ import styles from './CreateChatModal.module.scss';
 import { Modal, Box, TextField, Button } from '@mui/material';
 
 export function CreateChatModal({ open, onClose, onCreate }) {
-    const [chatName, setChatName] = useState('');
+    const [otherUserName, setOtherUserName] = useState('');
+    const [errors, setErrors] = useState({});
+
+    const validate = () => {
+        const newErrors = {};
+        if (!otherUserName.trim()) {
+            newErrors.otherUserName = 'Имя пользователя обязательно';
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleCreate = () => {
-        if (chatName.trim()) {
-            onCreate(chatName.trim());
-            setChatName('');
+        if (validate()) {
+            onCreate(otherUserName.trim());
+            setOtherUserName('');
             onClose();
         }
     };
@@ -20,15 +30,28 @@ export function CreateChatModal({ open, onClose, onCreate }) {
                 <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Введите имя чата"
-                    value={chatName}
-                    onChange={(e) => setChatName(e.target.value)}
+                    placeholder="Имя пользователя"
+                    value={otherUserName}
+                    onChange={(e) => setOtherUserName(e.target.value)}
+                    error={!!errors.otherUserName}
+                    helperText={errors.otherUserName}
+                    className={styles.input}
                 />
                 <div className={styles.buttons}>
-                    <Button variant="contained" color="primary" onClick={handleCreate}>
+                    <Button 
+                        variant="contained" 
+                        onClick={handleCreate}
+                        style={{ backgroundColor: '#8e24aa', color: '#fff' }}
+                        className={styles.createButton}
+                    >
                         Создать
                     </Button>
-                    <Button variant="outlined" onClick={onClose}>
+                    <Button 
+                        variant="outlined" 
+                        onClick={onClose}
+                        style={{ borderColor: '#8e24aa', color: '#8e24aa' }}
+                        className={styles.cancelButton}
+                    >
                         Отмена
                     </Button>
                 </div>
