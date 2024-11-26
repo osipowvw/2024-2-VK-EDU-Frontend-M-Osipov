@@ -4,15 +4,20 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
-    width: 80%;
-    max-width: 300px;
+    width: 90%;
+    max-width: 400px;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+}
+
+.input {
+    margin-bottom: 20px;
 }
